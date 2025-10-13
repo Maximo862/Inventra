@@ -1,11 +1,13 @@
+import { User } from "../types/types";
+
 const URL = "http://localhost:4000";
 
-export async function registerReq(user) {
+export async function registerReq(user: User) {
   try {
     const res = await fetch(`${URL}/register`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
     });
 
@@ -15,16 +17,16 @@ export async function registerReq(user) {
 
     return data;
   } catch (error) {
-    return { error: error };
+    return { error };
   }
 }
 
-export async function loginReq(user) {
+export async function loginReq(user: User) {
   try {
     const res = await fetch(`${URL}/login`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-type": "application/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user),
     });
 
@@ -34,7 +36,7 @@ export async function loginReq(user) {
 
     return data;
   } catch (error) {
-    return { error: error };
+    return { error };
   }
 }
 
@@ -51,6 +53,6 @@ export async function verifyReq() {
 
     return data;
   } catch (error) {
-    return { error: error || "Unauthorized" };
+    return { error };
   }
 }

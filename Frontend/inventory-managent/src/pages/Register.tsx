@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
-import { authContext } from "../context/AuthContext";
+import { FormEvent, useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function Register() {
-  const { register, isauthenticated } = useContext(authContext);
+  const { register, isauthenticated } = useContext(AuthContext)!;
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +12,7 @@ export function Register() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isauthenticated === true) navigate("/dashboard");
+    if (isauthenticated === true) navigate("/products");
   }, [isauthenticated]);
 
   const user = {
@@ -21,7 +21,7 @@ export function Register() {
     password,
   };
 
-  async function hanldeSubmit(e) {
+  async function hanldeSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (username.trim() && email.trim() && password.trim()) {

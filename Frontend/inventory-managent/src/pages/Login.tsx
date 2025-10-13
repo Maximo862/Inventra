@@ -1,8 +1,9 @@
-import { useContext, useState } from "react";
-import { authContext } from "../context/AuthContext";
+import { useContext, useState, useEffect, FormEvent } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
-  const { login } = useContext(authContext);
+  const { login, isauthenticated } = useContext(AuthContext)!;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -11,7 +12,13 @@ export function Login() {
     password,
   };
 
-  async function hanldeSubmit(e) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isauthenticated === true) navigate("/products");
+  }, [isauthenticated]);
+
+  async function hanldeSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (email.trim() && password.trim()) {
@@ -21,7 +28,7 @@ export function Login() {
 
   return (
     <div>
-      <form onSubmit={hanldeSubmit()}>
+      <form onSubmit={hanldeSubmit}>
         <input
           type="text"
           placeholder="enter your email"

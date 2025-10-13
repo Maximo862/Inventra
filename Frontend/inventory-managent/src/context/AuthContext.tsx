@@ -1,26 +1,33 @@
-import { createContext } from "react";
+import { createContext, useEffect, useState } from "react";
 import { loginReq, registerReq, verifyReq } from "../api/apirequest";
-import { useState } from "react";
-import { useEffect } from "react";
+import { User } from "../types/types";
 
-export const authContext = createContext();
 
-export function AuthProvider({ children }) {
+interface AuthContextType {
+  register: Function;
+  login: Function;
+  loading: boolean;
+  isauthenticated: boolean;
+}
+
+export const AuthContext = createContext<AuthContextType | null>(null);
+
+export function AuthProvider({ children }: any) {
   const [isauthenticated, setisAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  async function register(user) {
+  async function register(user: User) {
     try {
       const res = await registerReq(user);
       setisAuthenticated(true);
-      console.log(res);
+      console.log("register: ", res);
     } catch (error) {
-      console.error(error);
+      console.error("register: ", error);
       setisAuthenticated(false);
     }
   }
 
-  async function login(user) {
+  async function login(user: User) {
     try {
       const res = await loginReq(user);
       setisAuthenticated(true);
@@ -44,7 +51,7 @@ export function AuthProvider({ children }) {
         }
         console.log("verify: ", res);
       } catch (error) {
-        console.error(error);
+        console.log(error);
         setisAuthenticated(false);
         console.log("VALUE3 : ", isauthenticated);
       } finally {
@@ -56,7 +63,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <authContext.Provider
+    <AuthContext.Provider
       value={{
         register,
         login,
@@ -65,6 +72,6 @@ export function AuthProvider({ children }) {
       }}
     >
       {children}
-    </authContext.Provider>
+    </AuthContext.Provider>
   );
 }
