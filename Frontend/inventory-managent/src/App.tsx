@@ -5,6 +5,9 @@ import { ProtectedRoutes } from "./ProtectedRoutes";
 import { Home } from "./pages/Home";
 import { Dashboard } from "./pages/Dashboard";
 import { Products } from "./pages/Products";
+import { Suppliers } from "./pages/Suppliers";
+import { Categories } from "./pages/Categories";
+import { Orders } from "./pages/Orders";
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
           <Route element={<Login />} path="/login" />
           <Route element={<ProtectedRoutes />}>
             <Route element={<Products />} path="/products" />
+            <Route element={<Categories />} path="/categories" />
+            <Route element={<Suppliers />} path="/suppliers" />
+            <Route element={<Orders />} path="/orders" />
             <Route element={<Dashboard />} path="/dashboard" />
           </Route>
         </Routes>

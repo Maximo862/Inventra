@@ -1,69 +1,100 @@
 import { FormEvent, useContext, useState } from "react";
 import { ProductContext } from "../context/ProductsContext";
+import { Product } from "../types/types";
+import { SupplierContext } from "../context/SuppliersContext";
+import { CategoryContext } from "../context/CategoriesContext";
 
 export function Products() {
   const { createProduct, deleteProduct, editProduct, products } =
     useContext(ProductContext)!;
+  const { suppliers } = useContext(SupplierContext)!;
+  const { categories } = useContext(CategoryContext)!;
 
-  const [name, setName] = useState("");
-  const [category, setCategory] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [stock, setStock] = useState<number>(0);
+  const [product, setProduct] = useState<Product>({
+    name: "",
+    price: 0,
+    stock: 0,
+    suppliers_Id: [],
+    category_id: null,
+  });
 
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   function resetForm() {
-    setName("");
-    setCategory("");
-    setPrice(0);
-    setStock(0);
+    setProduct({
+      name: "",
+      price: 0,
+      stock: 0,
+      suppliers_Id: [],
+      category_id: null,
+    });
   }
 
-  async function handleCreate(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (name.trim() && category.trim() && price && stock) {
-      await createProduct({ name, category, price, stock });
-      resetForm();
+    const { name, price, suppliers_Id, category_id } = product;
+
+    if (!name.trim() || !price || !suppliers_Id || !category_id) return;
+
+    if (editingId) {
+      await editProduct(product, editingId);
+      setEditingId(null);
+    } else {
+      await createProduct(product);
       setIsCreating(false);
     }
-  }
 
-  async function handleEdit(e: FormEvent<HTMLFormElement>, id:number) {
-    e.preventDefault();
-    if (name.trim() && category.trim() && price && stock) {
-      await editProduct({ name, category, price, stock }, id);
-      resetForm();
-      setEditingId(null);
-    }
+    resetForm();
   }
 
   return (
     <section>
       {isCreating ? (
-        <form onSubmit={handleCreate}>
+        <form onSubmit={handleSubmit}>
           <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={product.name}
+            onChange={(e) => setProduct({ ...product, name: e.target.value })}
             placeholder="Name"
           />
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="Category"
-          />
+          <select
+            value={product.category_id! ?? ""}
+            onChange={(e) =>
+              setProduct({ ...product, category_id: Number(e.target.value) })
+            }
+          >
+            <option>Pick one category</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           <input
             type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
+            value={product.price || ""}
+            onChange={(e) =>
+              setProduct({ ...product, price: Number(e.target.value) })
+            }
             placeholder="Price"
           />
-          <input
-            type="number"
-            value={stock}
-            onChange={(e) => setStock(Number(e.target.value))}
-            placeholder="Stock"
-          />
+          <div>
+            {suppliers.map((s) => (
+              <input
+                key={s.id}
+                type="checkbox"
+                checked={product.suppliers_Id.includes(s.id!)}
+                onChange={(e) => {
+                  const selected = e.target.checked
+                    ? [...product.suppliers_Id, s.id].filter(
+                        (id): id is number => id !== undefined
+                      )
+                    : product.suppliers_Id.filter((id) => id !== s.id);
+                  setProduct({ ...product, suppliers_Id: selected });
+                }}
+              />
+            ))}
+          </div>
           <button type="submit">Guardar</button>
           <button
             type="button"
@@ -82,28 +113,37 @@ export function Products() {
       <div>
         {products?.map((p) =>
           editingId === p.id ? (
-            <form key={p.id} onSubmit={(e) => handleEdit(e, p.id!)}>
+            <form key={p.id} onSubmit={handleSubmit}>
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={product.name}
+                onChange={(e) =>
+                  setProduct({ ...product, name: e.target.value })
+                }
                 placeholder="Name"
               />
-              <input
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                placeholder="Category"
-              />
+              <select
+                value={product.category_id!}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    category_id: Number(e.target.selectedOptions),
+                  })
+                }
+              >
+                <option>Pick one category</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
               <input
                 type="number"
-                value={price}
-                onChange={(e) => setPrice(Number(e.target.value))}
+                value={product.price || ""}
+                onChange={(e) =>
+                  setProduct({ ...product, price: Number(e.target.value) })
+                }
                 placeholder="Price"
-              />
-              <input
-                type="number"
-                value={stock}
-                onChange={(e) => setStock(Number(e.target.value))}
-                placeholder="Stock"
               />
               <button type="submit">Actualizar</button>
               <button
@@ -119,18 +159,34 @@ export function Products() {
           ) : (
             <div key={p.id}>
               <h4>{p.name}</h4>
-              <p>{p.category}</p>
+              <p>
+                Category :{" "}
+                {categories.find((c) => c.id === p.category_id)?.name}
+              </p>
               <p>{p.price}$</p>
-              <p>quantity: {p.stock}</p>
+              <p style={{color: p.stock < 0 ? "red" : "black" }}>Stock: {p.stock ?? "0"}</p>
               <p>user_id: {p.user_id}</p>
+              <p>
+                Suppliers:{" "}
+                {p.suppliers_Id && p.suppliers_Id.length > 0
+                  ? p.suppliers_Id
+                      .map((id) => suppliers.find((s) => s.id === id)?.name)
+                      .filter(Boolean)
+                      .join(", ")
+                  : "Ninguno"}
+              </p>
+
               <button onClick={() => deleteProduct(p.id!)}>Eliminar</button>
               <button
                 onClick={() => {
                   setEditingId(p.id!);
-                  setName(p.name || "");
-                  setCategory(p.category || "");
-                  setPrice(p.price || 0);
-                  setStock(p.stock || 0);
+                  setProduct({
+                    name: p.name || "",
+                    category_id: p.category_id || null,
+                    price: p.price || 0,
+                    stock: p.stock || 0,
+                    suppliers_Id: p.suppliers_Id || [],
+                  });
                 }}
               >
                 Editar

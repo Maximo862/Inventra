@@ -1,4 +1,4 @@
-import { pool } from "../db/db";
+const { pool } = require("../db/db");
 
 async function getAllSuppliers(req, res) {
   try {
@@ -27,16 +27,18 @@ async function getSupplierById(req, res) {
 
 async function createSupplier(req, res) {
   try {
-    const { name, contact, phone, email } = req.body;
+    const { name, phone, email } = req.body;
+    console.log("recibido backend: ", name, phone, email);
     const [result] = await pool.execute(
-      "INSERT INTO suppliers (name, contact, phone, email) VALUES (?, ?, ?, ?)",
-      [name, contact, phone, email]
+      "INSERT INTO suppliers (name, phone, email) VALUES (?,?,?)",
+      [name, phone, email]
     );
-
+    console.log("result: ", result);
     res.status(201).json({
-      supplier: { id: result.insertId, name, contact, phone, email },
+      supplier: { id: result.insertId, name, phone, email },
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Error creating supplier" });
   }
 }
@@ -44,18 +46,18 @@ async function createSupplier(req, res) {
 async function updateSupplier(req, res) {
   try {
     const { id } = req.params;
-    const { name, contact, phone, email } = req.body;
+    const { name, phone, email } = req.body;
 
     const [result] = await pool.execute(
-      "UPDATE suppliers SET name=?, contact=?, phone=?, email=? WHERE id=?",
-      [name, contact, phone, email, id]
+      "UPDATE suppliers SET name=COALESCE(?,name), phone=COALESCE(?,phone), email=COALESCE(?,email) WHERE id=?",
+      [name, phone, email, id]
     );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ error: "Supplier not found" });
     }
 
-    res.json({ supplier: { id, name, contact, phone, email } });
+    res.json({ supplier: { id, name, phone, email } });
   } catch (error) {
     res.status(500).json({ error: "Error updating supplier" });
   }

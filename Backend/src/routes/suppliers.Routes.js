@@ -1,22 +1,21 @@
-import { Router } from "express";
-import {
-  getSuppliers,
-  getSupplierById,
+const { Router } = require("express");
+const {
   createSupplier,
-  updateSupplier,
   deleteSupplier,
-} from "../controllers/supplier.controller.js";
+  getAllSuppliers,
+  getSupplierById,
+  updateSupplier,
+} = require("../controllers/supplier.controller.js");
+const { authRequired } = require("../middlewares/auth.Middleware");
 
-const router = Router();
+const supplierRoutes = Router();
 
-router.get("/", getSuppliers);
+supplierRoutes.get("/suppliers", getAllSuppliers);
+supplierRoutes.get("/suppliers/:id", getSupplierById);
+supplierRoutes.post("/suppliers",authRequired, createSupplier);
+supplierRoutes.put("/suppliers/:id",authRequired, updateSupplier);
+supplierRoutes.delete("/suppliers/:id",authRequired, deleteSupplier);
 
-router.get("/:id", getSupplierById);
-
-router.post("/", createSupplier);
-
-router.put("/:id", updateSupplier);
-
-router.delete("/:id", deleteSupplier);
-
-export default router;
+module.exports = {
+  supplierRoutes,
+};

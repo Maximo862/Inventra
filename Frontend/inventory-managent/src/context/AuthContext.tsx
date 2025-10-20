@@ -2,7 +2,6 @@ import { createContext, useEffect, useState } from "react";
 import { loginReq, registerReq, verifyReq } from "../api/apirequest";
 import { User } from "../types/types";
 
-
 interface AuthContextType {
   register: Function;
   login: Function;
@@ -31,10 +30,11 @@ export function AuthProvider({ children }: any) {
     try {
       const res = await loginReq(user);
       setisAuthenticated(true);
-      console.log(res);
+      console.log("respuesta y se autentica: ", res);
     } catch (error) {
       console.error(error);
       setisAuthenticated(false);
+      console.log("respuesta y NO autentica: ", error);
     }
   }
 

@@ -3,7 +3,10 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const {router} = require("./routes/routes");
-const {productsrouter} = require("./routes/productsRoutes");
+const {productsrouter} = require("./routes/products.Routes");
+const {supplierRoutes} = require("./routes/suppliers.Routes")
+const {categoriesRoutes} = require("./routes/categories.Routes")
+const {orderRouter} = require("./routes/order.Routes")
 
 const app = express();
 
@@ -17,11 +20,9 @@ app.use(cors({
 
 app.use(router);
 app.use(productsrouter);
+app.use(supplierRoutes);
+app.use(categoriesRoutes);
+app.use(orderRouter);
 
 app.listen(4000, () => console.log("Server running on port 4000"));
 
-
-
-//conectar crud con frontend y depurar 
-//crud de suppliers ver el tema de como se trabajan las ordenes y demas tablas
-//COMMIT

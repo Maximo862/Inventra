@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const jsonwebtoken = require("jsonwebtoken");
 const { pool } = require("../db/db");
 
-
 async function loginAuth(req, res) {
   try {
     const { password, email } = req.body;
@@ -31,16 +30,18 @@ async function loginAuth(req, res) {
       }
     );
 
-    return res.cookie("token", token,  {
-      httpOnly: true,
-      secure : process.env.NODE_ENV === "production",
-      sameSite: "strict",
-  maxAge: 1000 * 60 * 60 
-    }).json({
-      message: "Sucesfull login",
-      user: { id: user.id, username: user.username, email },
-      token,
-    });
+    return res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60,
+      })
+      .json({
+        message: "Sucesfull login",
+        user: { id: user.id, username: user.username, email },
+        token,
+      });
   } catch (error) {
     console.log("login: ", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -77,21 +78,22 @@ async function registerAuth(req, res) {
       }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure : process.env.NODE_ENV === "production",
-      sameSite: "strict",
-  maxAge: 1000 * 60 * 60 
-    }).json({
-      message: "User Created",
-      user: { id: result.insertId, username, email }
-    });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 1000 * 60 * 60,
+      })
+      .json({
+        message: "User Created",
+        user: { id: result.insertId, username, email },
+      });
   } catch (err) {
     console.log("register: ", err);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
-
 
 async function verifyAuth(req, res) {
   try {
@@ -100,8 +102,12 @@ async function verifyAuth(req, res) {
 
     const decoded = jsonwebtoken.verify(token, process.env.JWT_SECRET);
 
-    const [rows] = await pool.execute("SELECT id, username, email FROM users WHERE id = ?", [decoded.id]);
-    if (rows.length === 0) return res.status(404).json({ error: "User not found" });
+    const [rows] = await pool.execute(
+      "SELECT id, username, email FROM users WHERE id = ?",
+      [decoded.id]
+    );
+    if (rows.length === 0)
+      return res.status(404).json({ error: "User not found" });
 
     return res.json({ user: rows[0] });
   } catch (error) {
