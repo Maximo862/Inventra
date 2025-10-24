@@ -1,16 +1,13 @@
 const express = require("express");
 const categoriesRoutes = express.Router();
 const {
-  createCategory,
-  getAllCategories,
-  updateCategory,
-  deleteCategory,
+  createCategoryCtrl, deleteCategoryCtrl, getAllCategoriesCtrl,updateCategoryCtrl
 } = require("../controllers/categories.Controller");
 const { authRequired } = require("../middlewares/auth.Middleware");
 
-categoriesRoutes.post("/categories",authRequired, createCategory);
-categoriesRoutes.get("/categories", getAllCategories);
-categoriesRoutes.put("/categories/:id",authRequired, updateCategory);
-categoriesRoutes.delete("/categories/:id",authRequired, deleteCategory);
+categoriesRoutes.post("/categories",authRequired, createCategoryCtrl);
+categoriesRoutes.get("/categories", getAllCategoriesCtrl);
+categoriesRoutes.put("/categories/:id",authRequired, updateCategoryCtrl);
+categoriesRoutes.delete("/categories/:id",authRequired, deleteCategoryCtrl);
 
 module.exports = {categoriesRoutes}

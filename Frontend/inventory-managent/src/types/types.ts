@@ -12,6 +12,8 @@ export interface Product {
   category_id: number | null;
   user_id?: number;
   suppliers_Id: number[];
+  expiration_date?: string
+  alert_threshold? : number
 }
 
 export interface Supplier {

@@ -1,89 +1,67 @@
-const { pool } = require("../db/db");
-
-async function createCategory(req, res) {
-  try {
-    const { name } = req.body;
-
-    if (!name) {
-      return res.status(400).json({ error: "Missing fields" });
-    }
-
-    const [result] = await pool.execute(
-      "INSERT INTO categories (name) VALUES (?)",
-      [name]
-    );
-
-    res.status(201).json({
-      message: "Category created",
-      category: { id: result.insertId, name },
-    });
-  } catch (error) {
-    console.error("Error creating category:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-async function getAllCategories(req, res) {
-  try {
-    const [rows] = await pool.execute("SELECT * FROM categories");
-
-    res.status(200).json(rows);
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-async function updateCategory(req, res) {
-  try {
-    const { id } = req.params;
-    const { name } = req.body;
-
-    const [result] = await pool.execute(
-      `UPDATE categories 
-       SET name = COALESCE(?, name)
-       WHERE id = ?`,
-      [name, id]
-    );
-
-    if (result.affectedRows === 0)
-      return res.status(404).json({ error: "Category not found" });
-
-    res.status(200).json({ message: "Category updated", category: id, name });
-  } catch (error) {
-    console.error("Error updating category:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-async function deleteCategory(req, res) {
-  try {
-    const { id } = req.params;
-
-    const [result] = await pool.execute("DELETE FROM categories WHERE id = ?", [
-      id,
-    ]);
-
-    if (result.affectedRows === 0)
-      return res.status(404).json({ error: "Category not found" });
-
-    const [used] = await con.execute(
-      "SELECT COUNT(*) AS total FROM products WHERE category_id = ?",
-      [id]
-    );
-    if (used[0].total > 0)
-      return res.status(400).json({ error: "Category in use by products" });
-
-    res.status(200).json({ message: "Category deleted", id });
-  } catch (error) {
-    console.error("Error deleting category:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-}
-
-module.exports = {
+const {
   createCategory,
   getAllCategories,
   updateCategory,
   deleteCategory,
+} = require("../services/categories.Service");
+
+async function createCategoryCtrl(req, res) {
+  try {
+    const category = await createCategory(req.body);
+    res.status(201).json({
+      message: "Category created",
+      category,
+    });
+  } catch (err) {
+    console.error("Error creating category:", err.message);
+    const status = err.message === "Missing fields" ? 400 : 500;
+    res.status(status).json({ error: err.message });
+  }
+}
+
+async function getAllCategoriesCtrl(req, res) {
+  try {
+    const categories = await getAllCategories();
+    res.status(200).json(categories);
+  } catch (err) {
+    console.error("Error fetching categories:", err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+async function updateCategoryCtrl(req, res) {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const category = await updateCategory({ id, name });
+    res.status(200).json({ message: "Category updated", category });
+  } catch (err) {
+    console.error("Error updating category:", err.message);
+    const status = err.message.includes("not found") ? 404 : 500;
+    res.status(status).json({ error: err.message });
+  }
+}
+
+async function deleteCategoryCtrl(req, res) {
+  try {
+    const { id } = req.params;
+
+    const deleted = await deleteCategory(id);
+    res.status(200).json({ message: "Category deleted", deleted });
+  } catch (err) {
+    console.error("Error deleting category:", err.message);
+    const status =
+      err.message.includes("not found") || err.message.includes("use")
+        ? 400
+        : 500;
+    res.status(status).json({ error: err.message });
+  }
+}
+
+module.exports = {
+  createCategoryCtrl,
+  getAllCategoriesCtrl,
+  updateCategoryCtrl,
+  deleteCategoryCtrl,
 };

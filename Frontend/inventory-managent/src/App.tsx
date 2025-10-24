@@ -32,19 +32,12 @@ function App() {
 
 export default App;
 
-//PSUEDOCODIGO AHORA :
-// - 1- pasar los componentes y el codigo a typescrit
-// - 2- hacer el crud y conectar al frontend de suppliers, orders, categories
-// - 3- Hacer un diseño base UI/UX se dice??
-// - 4- Hacer un repositorio con el diseño base
-
 //IDEAS :
 //pestaña dashboard donde estan total de productos , de stocks , de ordenes hoy, dinero disponible
-//pestaña productos para ver los productos que hay con su categoria, precio y stock y tambien un boton para añadir productos
-//pestaña ordenes para ver las ordenes del dia
-//pestaña supliers (opcional )
 // boton logout
-//video : Demostración del sistema de gestión de inventario | Proyecto MERN Stack - 1
+//poder marcar como INCACTIVO UN PRODUCTO
+//video demo: Demostración del sistema de gestión de inventario | Proyecto MERN Stack - 1
+//Avisar al eliminar categories que el producto esta en uso 
 
 // SOBRE LAS TABLAS DE LA BASE DE DATOS
 

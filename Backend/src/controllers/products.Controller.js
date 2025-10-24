@@ -1,167 +1,88 @@
-const { pool } = require("../db/db");
+const productService = require("../services/products.Service");
 
 async function getAllProducts(req, res) {
   try {
-    const [products] =
-      await pool.execute(`SELECT p.*, COALESCE(SUM(CASE WHEN o.type = 'entrada' THEN o.quantity
-                         WHEN o.type = 'salida' THEN -o.quantity ELSE 0 END ), 0) AS stock FROM products p LEFT JOIN orders o ON p.id = o.product_id GROUP BY p.id`);
-    if (products.length === 0) return res.status(200).json({ products: [] });
-    const [product_suppliersIds] = await pool.execute(
-      "SELECT * FROM product_suppliers"
-    );
-    const productsWithSuppliersIds = products.map((p) => {
-      const supplieridForProduct = product_suppliersIds
-        .filter((ps) => ps.product_id === p.id)
-        .map((ps) => ps.supplier_id);
-      return { ...p, suppliers_Id: supplieridForProduct };
-    });
-
-    return res.status(200).json({ products: productsWithSuppliersIds });
+    const products = await productService.getAllProducts();
+    return res.status(200).json({ products });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "server error" });
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
   }
 }
 
 async function getProductById(req, res) {
   try {
-    const { id } = req.params;
-
-    const [rows] = await pool.execute(
-      `SELECT p.*, COALESCE(SUM(CASE WHEN o.type = 'entrada' THEN o.quantity
-                         WHEN o.type = 'salida' THEN -o.quantity ELSE 0 END ), 0) AS stock FROM products p LEFT JOIN orders o ON p.id = o.product_id WHERE p.id = ? GROUP BY p.id`,
-      [id]
-    );
-    if (rows.length === 0)
-      return res.status(400).json({ error: "product not found" });
-    return res.status(200).json({ product: rows[0] });
+    const product = await productService.getProductById(req.params.id);
+    return res.status(200).json({ product });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "server error" });
+    console.error(error);
+    const status = err.message === "Product not found" ? 400 : 500;
+    return res.status(status).json({ error: error.message });
   }
 }
 
 async function createProduct(req, res) {
-  const con = await pool.getConnection();
-  await con.beginTransaction();
   try {
-    const { name, category_id, price, suppliers_Id = [] } = req.body;
-    if (!name || !category_id || !price || !suppliers_Id)
-      return res.status(400).json({ error: "fields required" });
+    const { name, category_id, price, suppliers_Id = [], expiration_date, alert_threshold} = req.body;
+    if (!name || !category_id || !price)
+      return res.status(400).json({ error: "Missing fields" });
 
-    const [result] = await con.execute(
-      "INSERT INTO products (name, category_id, price, user_id) VALUES (?, ?, ?, ?)",
-      [name, category_id, price, req.theuser.id]
-    );
-    if (result.affectedRows === 0)
-      return res.status(400).json({ error: "product not found" });
-
-    for (const supplierId of suppliers_Id) {
-      await con.execute(
-        "INSERT INTO product_suppliers (product_id, supplier_id) VALUES (?, ?)",
-        [result.insertId, supplierId]
-      );
-    }
-
-    await con.commit();
-
-    return res.status(201).json({
-      message: "Product created",
-      product: {
-        id: result.insertId,
-        name,
-        category_id,
-        price,
-        user_id: req.theuser.id,
-        suppliers_Id,
-      },
+    const product = await productService.createProduct({
+      name,
+      category_id,
+      price,
+      suppliers_Id,
+      user_id: req.theuser.id,
+      expiration_date : expiration_date || null,
+      alert_threshold : alert_threshold || null,
     });
+
+    return res.status(201).json({ message: "Product created", product });
   } catch (error) {
-    await con.rollback();
     console.error(error);
-    return res.status(500).json({ error: "server error" });
-  } finally {
-    con.release();
+    return res.status(500).json({ error: "Server error" });
   }
 }
 
 async function editProduct(req, res) {
-  const con = await pool.getConnection();
-  await con.beginTransaction();
   try {
     const { id } = req.params;
-    const { name, category_id, price, suppliers_Id = [] } = req.body;
-    if (!name || !category_id || !price || !suppliers_Id)
-      return res.status(400).json({ error: "fields required" });
+    const { name, category_id, price, suppliers_Id = [], expiration_date, alert_threshold } = req.body;
 
-    const [result] = await con.execute(
-      "UPDATE products SET name = COALESCE(?, name), category_id = COALESCE(?, category_id), price = COALESCE(?, price) WHERE id = ? AND user_id = ?",
-      [name, category_id, price, id, req.theuser.id]
-    );
-    if (result.affectedRows === 0)
-      return res.status(400).json({ error: "product not found" });
-
-    await con.execute("DELETE FROM product_suppliers WHERE product_id = ?", [
+    const product = await productService.editProduct({
       id,
-    ]);
-
-    for (const supplierid of suppliers_Id) {
-      await con.execute(
-        "INSERT INTO product_suppliers (product_id, supplier_id) VALUES (?, ?)",
-        [id, supplierid]
-      );
-    }
-
-    await con.commit();
-
-    return res.status(201).json({
-      message: "Product edited",
-      product: {
-        id,
-        name,
-        category_id,
-        price,
-        user_id: req.theuser.id,
-        suppliers_Id,
-      },
+      name,
+      category_id,
+      price,
+      suppliers_Id,
+      user_id: req.theuser.id,
+      expiration_date : expiration_date || null,
+      alert_threshold : alert_threshold || null
     });
+
+    return res.status(200).json({ message: "Product updated", product });
   } catch (error) {
-    await con.rollback();
     console.error(error);
-    return res.status(500).json({ error: "server error" });
-  } finally {
-    con.release();
+    const status = err.message === "Product not found" ? 400 : 500;
+    return res.status(status).json({ error: error.message });
   }
 }
 
 async function deleteProduct(req, res) {
-  const con = await pool.getConnection();
-  await con.beginTransaction();
   try {
-    const { id } = req.params;
-    await con.execute("DELETE FROM product_suppliers WHERE product_id = ?", [
-      id,
-    ]);
-    const [result] = await con.execute("DELETE FROM products WHERE id = ?", [
-      id,
-    ]);
-    if (result.affectedRows === 0)
-      return res.status(400).json({ error: "product not found" });
-    await con.commit();
-    return res.status(200).json({ message: "product deleted", id });
+    await productService.deleteProduct(req.params.id);
+    return res.status(200).json({ message: "Product deleted" });
   } catch (error) {
-    await con.rollback();
-    console.log(error);
-    return res.status(500).json({ error: "server error" });
-  } finally {
-    con.release();
+    console.error(error);
+    const status = err.message === "Product not found" ? 400 : 500;
+    return res.status(status).json({ error: error.message });
   }
 }
 
 module.exports = {
-  createProduct,
-  deleteProduct,
-  editProduct,
   getAllProducts,
   getProductById,
+  createProduct,
+  editProduct,
+  deleteProduct,
 };
