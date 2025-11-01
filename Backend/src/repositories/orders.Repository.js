@@ -13,6 +13,14 @@ async function findAllOrders() {
   `);
 }
 
+async function findLatestOrders() {
+  const [orders] = await pool.execute(`
+    SELECT *
+    FROM orders ORDER BY created_at DESC LIMIT 5
+  `);
+  return orders;
+}
+
 async function findOrderById(id) {
   return pool.execute(
     `
@@ -67,4 +75,5 @@ module.exports = {
   updateOrder,
   deleteOrder,
   findProductById,
+  findLatestOrders,
 };

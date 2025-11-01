@@ -2,7 +2,9 @@ const productService = require("../services/products.Service");
 
 async function getAllProducts(req, res) {
   try {
-    const products = await productService.getAllProducts();
+    const activeParam = req.query.active;
+    const activeOnly = activeParam === "false" ? false : true; 
+    const products = await productService.getAllProducts(activeOnly);
     return res.status(200).json({ products });
   } catch (error) {
     console.error(error);
@@ -10,13 +12,37 @@ async function getAllProducts(req, res) {
   }
 }
 
+async function getLatestProducts(req,res) {
+  try {
+    const products = await productService.getLatestProducts()
+return res.status(200).json({ products });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
+
+async function updateProductStatus(req, res) {
+  try {
+    const { id } = req.params;
+    const { isActive } = req.body;
+    await productService.updateProductStatus(id, isActive);
+    return res.status(200).json({ message: "Product Updated" });
+  } catch (error) {
+    console.error(error);
+    const status = error.message === "Product not found" ? 400 : 500;
+    return res.status(status).json({ error: error.message });
+  }
+}
+
+
 async function getProductById(req, res) {
   try {
     const product = await productService.getProductById(req.params.id);
     return res.status(200).json({ product });
   } catch (error) {
     console.error(error);
-    const status = err.message === "Product not found" ? 400 : 500;
+    const status = error.message === "Product not found" ? 400 : 500;
     return res.status(status).json({ error: error.message });
   }
 }
@@ -49,6 +75,7 @@ async function editProduct(req, res) {
     const { id } = req.params;
     const { name, category_id, price, suppliers_Id = [], expiration_date, alert_threshold } = req.body;
 
+    console.log("ESTO RECIBE : ", expiration_date, alert_threshold)
     const product = await productService.editProduct({
       id,
       name,
@@ -63,7 +90,7 @@ async function editProduct(req, res) {
     return res.status(200).json({ message: "Product updated", product });
   } catch (error) {
     console.error(error);
-    const status = err.message === "Product not found" ? 400 : 500;
+    const status = error.message === "Product not found" ? 400 : 500;
     return res.status(status).json({ error: error.message });
   }
 }
@@ -73,11 +100,12 @@ async function deleteProduct(req, res) {
     await productService.deleteProduct(req.params.id);
     return res.status(200).json({ message: "Product deleted" });
   } catch (error) {
-    console.error(error);
-    const status = err.message === "Product not found" ? 400 : 500;
+    const status = error.message === "Product not found" ? 400 : 500;
+    console.log(error.message)
     return res.status(status).json({ error: error.message });
   }
 }
+
 
 module.exports = {
   getAllProducts,
@@ -85,4 +113,6 @@ module.exports = {
   createProduct,
   editProduct,
   deleteProduct,
+  getLatestProducts,
+  updateProductStatus
 };

@@ -6,11 +6,18 @@ const {
   findProductById,
   insertOrder,
   updateOrder,
+  findLatestOrders,
 } = require("../repositories/orders.Repository");
 
 async function getAllOrdersService() {
   const [orders] = await findAllOrders();
   return orders;
+}
+
+async function getLatestProducts() {
+  const orders = await findLatestOrders()
+if (orders.length === 0) return []
+return orders
 }
 
 async function getOrderByIdService(id) {
@@ -73,4 +80,5 @@ module.exports = {
   createOrderService,
   editOrderService,
   deleteOrderService,
+  getLatestProducts
 };

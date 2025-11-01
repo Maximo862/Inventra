@@ -2,12 +2,44 @@ import { Product } from "../types/types";
 const URL = "http://localhost:4000";
 
 export async function getAllProductsRequest() {
-  const res = await fetch(`${URL}/products`, {
+  const res = await fetch(`${URL}/products?active=true`, {
     method: "GET",
     credentials: "include",
   });
 
   if (!res.ok) throw new Error("GetAllProducts Error");
+  return res.json();
+}
+
+export async function getInactiveProductsRequest() {
+  const res = await fetch(`${URL}/products?active=false`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("GetInactiveProducts Error");
+  return res.json();
+}
+
+export async function updateProductStatusRequest(id: number, isActive: boolean) {
+  const res = await fetch(`${URL}/products/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isActive }),
+  });
+
+  if (!res.ok) throw new Error("UpdateProductStatus Error");
+  return res.json();
+}
+
+export async function getLatestProductsRequest() {
+  const res = await fetch(`${URL}/latestproducts`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("GetLatestProducts Error");
   return res.json();
 }
 
@@ -51,6 +83,8 @@ export async function deleteProductRequest(id: number) {
     credentials: "include",
   });
 
-  if (!res.ok) throw new Error("DeleteProduct Error");
-  return res.json();
+   const data = await res.json()
+
+  if (!res.ok)  throw new Error(data.error || "DeleteCategory Error")
+  return data;
 }

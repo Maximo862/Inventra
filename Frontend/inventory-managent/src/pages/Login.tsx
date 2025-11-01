@@ -1,48 +1,48 @@
 import { useContext, useState, useEffect, FormEvent } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useHandleForm } from "../hooks/useHandleForm";
+import { useRedirect } from "../hooks/useRedirect";
+import { AuthenticationCard } from "../components/AuthenticationCard";
 
 export function Login() {
-  const { login, isauthenticated } = useContext(AuthContext)!;
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { isauthenticated } = useContext(AuthContext)!;
 
-  const user = {
-    email,
-    password,
-  };
+  useRedirect({
+    condition: isauthenticated,
+    path: "/orders",
+  });
 
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isauthenticated === true) navigate("/products");
-  }, [isauthenticated]);
-
-  async function hanldeSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (email.trim() && password.trim()) {
-      await login(user);
-    }
-  }
+  const { handleSubmit, setUser, user } = useHandleForm("login");
 
   return (
-    <div>
-      <form onSubmit={hanldeSubmit}>
-        <input
-          type="text"
-          placeholder="enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">SEND</button>
-      </form>
-    </div>
+    <AuthenticationCard
+      Handlesubmit={handleSubmit}
+      tittle="Loguearse"
+      inputs={
+        <>
+          <input
+            type="text"
+            className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+            placeholder="Email"
+            value={user.email}
+            onChange={(e) => setUser({ ...user, email: e.target.value })}
+          />
+          <input
+            className="bg-gray-700 text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition ease-in-out duration-150"
+            type="text"
+            placeholder="Contraseña"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+          />
+        </>
+      }
+      button={{
+        submit: "Loguearse",
+        textRedirect: "No tiene cuenta?",
+        redirect: "Registrarse",
+      }}
+      path="/register"
+    />
   );
 }

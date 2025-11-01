@@ -17,9 +17,7 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
 
     if (validate && !validate(values)) return;
- console.log("editing : ", editingId)
     if (editingId) {
-      console.log("hola esoty en el editing : ", editingId)
       await editCategory(values, editingId);
       setEditingId(null);
     } else {

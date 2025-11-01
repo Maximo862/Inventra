@@ -12,6 +12,16 @@ export async function getAllOrdersRequest() {
   return res.json();
 }
 
+export async function getLatestOrdersRequest() {
+  const res = await fetch(`${URL}/latestorders`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("GetLatestOrders Error");
+  return res.json();
+}
+
 export async function getOrderByIdRequest(id: number) {
   const res = await fetch(`${URL}/orders/${id}`, {
     method: "GET",

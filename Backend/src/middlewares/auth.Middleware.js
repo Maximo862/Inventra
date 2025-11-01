@@ -7,7 +7,6 @@ function authRequired(req, res, next) {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.theuser = decoded;
-
     next();
   } catch (error) {
     console.error("Auth error:", error.message);

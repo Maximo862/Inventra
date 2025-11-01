@@ -15,18 +15,18 @@ async function findByEmail(email) {
   return rows[0];
 }
 
-async function insert({ name, phone, email }) {
+async function insert({ name, phone, email, address }) {
   const [result] = await pool.execute(
-    "INSERT INTO suppliers (name, phone, email) VALUES (?, ?, ?)",
-    [name, phone, email]
+    "INSERT INTO suppliers (name, phone, email, address) VALUES (?, ?, ?, ?)",
+    [name, phone, email, address]
   );
   return result.insertId;
 }
 
-async function update({ id, name, phone, email }) {
+async function update({ id, name, phone, email, address }) {
   await pool.execute(
-    "UPDATE suppliers SET name = COALESCE(?, name), phone = COALESCE(?, phone), email = COALESCE(?, email) WHERE id = ?",
-    [name, phone, email, id]
+    "UPDATE suppliers SET name = COALESCE(?, name), phone = COALESCE(?, phone), email = COALESCE(?, email), address = ? WHERE id = ?",
+    [name, phone, email,address, id]
   );
 }
 

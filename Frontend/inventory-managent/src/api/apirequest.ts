@@ -35,3 +35,13 @@ export async function verifyReq() {
   if (!res.ok) throw new Error("Verify error");
   return res.json();
 }
+
+export async function logoutReq() {
+  const res = await fetch(`${URL}/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("Logout error");
+  return res.json();
+}

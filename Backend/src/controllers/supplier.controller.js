@@ -23,7 +23,7 @@ async function getSupplierById(req, res) {
 
 async function createSupplier(req, res) {
   try {
-    const { name, phone, email } = req.body;
+    const { name, phone, email, address } = req.body;
     if (!name || !phone || !email)
       return res.status(400).json({ error: "Fields required" });
 
@@ -31,6 +31,7 @@ async function createSupplier(req, res) {
       name,
       phone,
       email,
+      address: address || null
     });
     res.status(201).json({ message: "Supplier created", supplier });
   } catch (error) {
@@ -43,7 +44,7 @@ async function createSupplier(req, res) {
 async function updateSupplier(req, res) {
   try {
     const { id } = req.params;
-    const { name, phone, email } = req.body;
+    const { name, phone, email, address } = req.body;
     if (!id) return res.status(400).json({ error: "Id required" });
 
     const supplier = await supplierService.updateSupplier({
@@ -51,6 +52,7 @@ async function updateSupplier(req, res) {
       name,
       phone,
       email,
+      address: address || null
     });
     res.status(200).json({ message: "Supplier updated", supplier });
   } catch (error) {

@@ -5,6 +5,7 @@ import { ProductContext } from "../context/ProductsContext";
 import { useFormSubmit } from "../hooks/useFormSubmit";
 import { useFormHandler } from "../hooks/useFormHandler";
 import { FormCard } from "../components/FormCard";
+import { ProductCard } from "../components/ProductCard";
 
 export function Orders() {
   const { orders, createOrder, editOrder, deleteOrder } =
@@ -75,39 +76,39 @@ export function Orders() {
             </div>
           }
           onCancel={() => {
-            setIsCreating(false)
-         setEditingId(null)
-         resetForm()
-          }
-          } 
+            setIsCreating(false);
+            setEditingId(null);
+            resetForm();
+          }}
           submitText="Guardar"
         />
       ) : (
         <button onClick={() => setIsCreating(true)}>+ Create Order</button>
       )}
-
-      <div>
         {orders &&
-          orders?.map((o) =>
-            (
-              <div key={o.id}>
-                <h4>
-                  {o.type.toUpperCase()} - Quantity: {o.quantity} - Product ID:{" "}
-                  {o.product_id}
-                </h4>
-                <button onClick={() => deleteOrder(o.id!)}>Delete</button>
-                <button
-                  onClick={() => {
-                    setEditingId(o.id!);
-                    setOrder(o);
-                  }}
-                >
-                  Edit
-                </button>
-              </div>
-            )
-          )}
-      </div>
+          orders?.map((o) => (
+<ProductCard
+key={o.id}
+name={products.find((p) => p.id === o.product_id)?.name!}
+features={
+  <div>
+  <p>{o.type.toUpperCase()}</p>
+  <p>Cantidad: {o.quantity}</p>
+</div>
+}
+onDelete={() => deleteOrder(o.id!)}
+onEdit={async () => {
+              setEditingId(o.id!);
+              setOrder({
+                product_id:  o.product_id,
+                quantity: o.quantity, 
+                type: o.type 
+              });
+            }}
+            disabled={isCreating || !!editingId}
+            type="order"
+/>
+          ))}
     </section>
   );
 }

@@ -41,6 +41,8 @@ export async function deleteCategoryRequest(id: number) {
     credentials: "include",
   });
 
-  if (!res.ok) throw new Error("DeleteCategory Error");
-  return res.json();
+  const data = await res.json()
+
+  if (!res.ok)  throw new Error(data.error || "DeleteCategory Error")
+  return data;
 }

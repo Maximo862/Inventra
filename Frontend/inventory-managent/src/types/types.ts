@@ -1,7 +1,9 @@
 export interface User {
+  id?: number;
   username?: string;
   email: string;
   password: string;
+  role: string;
 }
 
 export interface Product {
@@ -11,9 +13,10 @@ export interface Product {
   stock: number;
   category_id: number | null;
   user_id?: number;
-  suppliers_Id: number[];
-  expiration_date?: string
-  alert_threshold? : number
+  suppliers_Id?: number[];
+  expiration_date?: string | null;
+  alert_threshold?: number | null;
+  isActive?: boolean
 }
 
 export interface Supplier {
@@ -21,7 +24,7 @@ export interface Supplier {
   name: string;
   email: string;
   phone: string;
-  contact: string;
+  address: string;
 }
 
 export interface Category {
@@ -32,7 +35,7 @@ export interface Category {
 export interface Order {
   id?: number;
   quantity: number;
-  type: "entrada" | "salida"; 
+  type: "entrada" | "salida";
   total?: number;
   created_at?: string;
   updated_at?: string;

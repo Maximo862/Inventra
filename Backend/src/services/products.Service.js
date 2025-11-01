@@ -1,8 +1,8 @@
 const { pool } = require("../db/db");
 const repo = require("../repositories/products.Repository");
 
-async function getAllProducts() {
-  const products = await repo.findAllProducts();
+async function getAllProducts(activeOnly = true) {
+  const products = await repo.findAllProducts(activeOnly);
   if (products.length === 0) return [];
 
   const relations = await repo.findAllProductSuppliers();
@@ -14,13 +14,34 @@ async function getAllProducts() {
   });
 }
 
+async function updateProductStatus(id, isActive) {
+  const result = await repo.updateInactiveProducts(id, isActive);
+  if (result.affectedRows === 0) throw new Error("Product not found");
+
+  return { id, updated: !!result.affectedRows };
+}
+
+async function getLatestProducts() {
+  const products = await repo.findLatestProducts();
+  if (products.length === 0) return [];
+  return products;
+}
+
 async function getProductById(id) {
   const rows = await repo.findProductById(id);
   if (rows.length === 0) throw new Error("Product not found");
   return rows[0];
 }
 
-async function createProduct({ name, category_id, price, suppliers_Id, user_id, expiration_date, alert_threshold }) {
+async function createProduct({
+  name,
+  category_id,
+  price,
+  suppliers_Id,
+  user_id,
+  expiration_date,
+  alert_threshold,
+}) {
   const con = await pool.getConnection();
   await con.beginTransaction();
 
@@ -31,7 +52,7 @@ async function createProduct({ name, category_id, price, suppliers_Id, user_id, 
       price,
       user_id,
       expiration_date,
-      alert_threshold
+      alert_threshold,
     });
 
     const productId = result.insertId;
@@ -41,7 +62,15 @@ async function createProduct({ name, category_id, price, suppliers_Id, user_id, 
     }
 
     await con.commit();
-    return { id: productId, name, category_id, price, suppliers_Id ,expiration_date, alert_threshold};
+    return {
+      id: productId,
+      name,
+      category_id,
+      price,
+      suppliers_Id,
+      expiration_date,
+      alert_threshold,
+    };
   } catch (error) {
     await con.rollback();
     throw error;
@@ -50,7 +79,16 @@ async function createProduct({ name, category_id, price, suppliers_Id, user_id, 
   }
 }
 
-async function editProduct({ id, name, category_id, price, suppliers_Id, user_id, expiration_date, alert_threshold}) {
+async function editProduct({
+  id,
+  name,
+  category_id,
+  price,
+  suppliers_Id,
+  user_id,
+  expiration_date,
+  alert_threshold,
+}) {
   const con = await pool.getConnection();
   await con.beginTransaction();
 
@@ -62,7 +100,7 @@ async function editProduct({ id, name, category_id, price, suppliers_Id, user_id
       price,
       user_id,
       expiration_date,
-      alert_threshold
+      alert_threshold,
     });
 
     if (result.affectedRows === 0) throw new Error("Product not found");
@@ -74,7 +112,15 @@ async function editProduct({ id, name, category_id, price, suppliers_Id, user_id
     }
 
     await con.commit();
-    return { id, name, category_id, price, suppliers_Id,expiration_date, alert_threshold };
+    return {
+      id,
+      name,
+      category_id,
+      price,
+      suppliers_Id,
+      expiration_date,
+      alert_threshold,
+    };
   } catch (error) {
     await con.rollback();
     throw error;
@@ -109,4 +155,6 @@ module.exports = {
   createProduct,
   editProduct,
   deleteProduct,
+  getLatestProducts,
+  updateProductStatus,
 };

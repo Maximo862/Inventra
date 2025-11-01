@@ -1,28 +1,37 @@
 import { createContext, useEffect, useState } from "react";
-import { loginReq, registerReq, verifyReq } from "../api/apirequest";
+import { loginReq, registerReq, verifyReq , logoutReq} from "../api/apirequest";
 import { User } from "../types/types";
 
 interface AuthContextType {
-  register: Function;
-  login: Function;
+ register: (user: User) => Promise<void>;
+  login: (user: User) => Promise<void>;
+  logout: () => Promise<void>;
   loading: boolean;
   isauthenticated: boolean;
+  errors : string 
+  user : User | null
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
+
 export function AuthProvider({ children }: any) {
+  const [user, setUser] = useState<User | null>(null)
   const [isauthenticated, setisAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState<any | null>(null)
 
   async function register(user: User) {
     try {
       const res = await registerReq(user);
       setisAuthenticated(true);
-      console.log("register: ", res);
-    } catch (error) {
+      console.log(res)
+      setUser(res.user)
+    } catch (error:any) {
       console.error("register: ", error);
       setisAuthenticated(false);
+      setErrors(error.error)
+      setUser(null)
     }
   }
 
@@ -30,11 +39,13 @@ export function AuthProvider({ children }: any) {
     try {
       const res = await loginReq(user);
       setisAuthenticated(true);
-      console.log("respuesta y se autentica: ", res);
-    } catch (error) {
+      console.log(res)
+      setUser(res.user)
+    } catch (error:any) {
       console.error(error);
       setisAuthenticated(false);
-      console.log("respuesta y NO autentica: ", error);
+       setErrors(error.error)
+       setUser(null)
     }
   }
 
@@ -44,24 +55,33 @@ export function AuthProvider({ children }: any) {
         const res = await verifyReq();
         if (res?.error) {
           setisAuthenticated(false);
-          console.log("VALUE1 : ", isauthenticated);
+          setUser(null)
         } else {
           setisAuthenticated(true);
-          console.log("VALUE2 : ", isauthenticated);
+          setUser(res.user)
         }
-        console.log("verify: ", res);
       } catch (error) {
         console.log(error);
         setisAuthenticated(false);
-        console.log("VALUE3 : ", isauthenticated);
+        setUser(null)
       } finally {
         setLoading(false);
-        console.log("VALUE4 : ", isauthenticated);
       }
     }
     verify();
   }, []);
 
+  async function logout() {
+  try {
+    await logoutReq(); 
+    setisAuthenticated(false);
+    setUser(null);
+  } catch (error) {
+    console.error("logout:", error);
+  }
+}
+
+console.log("user: ", user)
   return (
     <AuthContext.Provider
       value={{
@@ -69,6 +89,9 @@ export function AuthProvider({ children }: any) {
         login,
         loading,
         isauthenticated,
+        errors,
+        user,
+        logout
       }}
     >
       {children}

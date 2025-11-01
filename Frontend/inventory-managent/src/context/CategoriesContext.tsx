@@ -58,8 +58,14 @@ export function CategoryProvider({ children }: any) {
       await deleteCategoryRequest(id);
       setCategories((prev) => prev.filter((c) => c.id !== id));
       console.log("Category deleted:", id);
-    } catch (error) {
-      console.error("Error deleting category:", error);
+    } catch (error: any) {
+      console.log("error del delete ", error)
+      const msg = error.message || "";
+    if (msg.includes("in use")) {
+       alert("❌ No se puede eliminar esta categoria porque tiene órdenes asociadas.");
+    } else {
+      alert("⚠️ Error al eliminar la categoria.");
+    }
     }
   }
 

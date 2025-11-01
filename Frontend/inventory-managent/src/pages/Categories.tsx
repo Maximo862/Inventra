@@ -7,8 +7,12 @@ import { useFormHandler } from "../hooks/useFormHandler";
 import { ProductCard } from "../components/ProductCard";
 
 export function Categories() {
-  const { categories, createCategory, editCategory, deleteCategory } =
-    useContext(CategoryContext)!;
+  const {
+    categories,
+    createCategory,
+    editCategory,
+    deleteCategory,
+  } = useContext(CategoryContext)!;
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 

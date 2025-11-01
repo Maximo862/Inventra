@@ -51,11 +51,12 @@ async function deleteCategoryCtrl(req, res) {
     res.status(200).json({ message: "Category deleted", deleted });
   } catch (err) {
     console.error("Error deleting category:", err.message);
+    console.error("Error deleting category2:", err);
     const status =
       err.message.includes("not found") || err.message.includes("use")
         ? 400
         : 500;
-    res.status(status).json({ error: err.message });
+    return res.status(status).json({ error: err.message });
   }
 }
 

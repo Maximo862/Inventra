@@ -10,7 +10,12 @@ async function registerAuth(req, res) {
     if (!username || !email || !password)
       return res.status(400).json({ error: "Fields required" });
 
-    const userData = await registerUser({ username, email, password });
+    const userData = await registerUser({
+      username,
+      email,
+      password,
+      role: "employee",
+    });
 
     res
       .cookie("token", userData.token, {
@@ -21,7 +26,7 @@ async function registerAuth(req, res) {
       })
       .json({
         message: "User Created",
-        user: { id: userData.id, username, email },
+        user: { id: userData.id, username, email, role: userData.role },
       });
   } catch (err) {
     console.error("register:", err.message);
@@ -47,10 +52,16 @@ async function loginAuth(req, res) {
       })
       .json({
         message: "Successful login",
-        user: { id: userData.id, username: userData.username, email },
+        user: {
+          id: userData.id,
+          username: userData.username,
+          email,
+          role: userData.role,
+        },
       });
   } catch (err) {
     console.error("login:", err.message);
+    console.error("login:", err);
     const status =
       err.message === "User not found" || err.message === "Incorrect password"
         ? 400
@@ -72,4 +83,18 @@ async function verifyAuth(req, res) {
   }
 }
 
-module.exports = { registerAuth, loginAuth, verifyAuth };
+async function logoutAuth(req, res) {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+    res.json({ message: "Logout successful" });
+  } catch (err) {
+    console.error("logout:", err.message);
+    res.status(500).json({ error: "Error during logout" });
+  }
+}
+
+module.exports = { registerAuth, loginAuth, verifyAuth, logoutAuth };

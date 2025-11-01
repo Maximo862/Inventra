@@ -16,13 +16,12 @@ export function Suppliers() {
     formData: supplier,
     setFormData: setSupplier,
     resetForm,
-  } = useFormHandler<Supplier>({ name: "", email: "", phone: "", contact: "" });
+  } = useFormHandler<Supplier>({ name: "", email: "", phone: "", address: "" });
 
   const { handleSubmit } = useFormSubmit<Supplier>({
     values: supplier,
     validate: (s) =>
       !!s.name.trim() &&
-      !!s.contact.trim() &&
       !!s.email.trim() &&
       !!s.phone.trim(),
     editingId,
@@ -66,20 +65,19 @@ export function Suppliers() {
               />
               <input
                 type="text"
-                value={supplier.contact}
+                value={supplier.address}
                 onChange={(e) =>
-                  setSupplier({ ...supplier, contact: e.target.value })
+                  setSupplier({ ...supplier, address: e.target.value })
                 }
                 placeholder="Direccion del proveedor"
               />
             </>
           }
           onCancel={() => {
-            setIsCreating(false)
-            setEditingId(null)
-            resetForm()
-          }
-          } 
+            setIsCreating(false);
+            setEditingId(null);
+            resetForm();
+          }}
           submitText="Guardar"
         />
       ) : (
@@ -88,32 +86,30 @@ export function Suppliers() {
 
       <div>
         {suppliers &&
-          suppliers.map((s) =>
-          (
-              <ProductCard
-                key={s.id}
-                name={s.name}
-                features={
-                  <div>
-                    <p>{s.email}</p>
-                    <p>{s.phone}</p>
-                    <p>{s.contact}</p>
-                  </div>
-                }
-                onEdit={async () => {
-                  setEditingId(s.id!);
-                  setSupplier({
-                    name: s.name || "",
-                    email: s.email || "",
-                    phone: s.phone || "",
-                    contact: s.contact || "",
-                  });
-                }}
-                onDelete={() => deleteSupplier(s.id!)}
-                disabled={!!editingId || isCreating}
-              />
-            )
-          )}
+          suppliers.map((s) => (
+            <ProductCard
+              key={s.id}
+              name={s.name}
+              features={
+                <div>
+                  <p>{s.email}</p>
+                  <p>{s.phone}</p>
+                  <p>{s.address}</p>
+                </div>
+              }
+              onEdit={async () => {
+                setEditingId(s.id!);
+                setSupplier({
+                  name: s.name || "",
+                  email: s.email || "",
+                  phone: s.phone || "",
+                  address: s.address || "",
+                });
+              }}
+              onDelete={() => deleteSupplier(s.id!)}
+              disabled={!!editingId || isCreating}
+            />
+          ))}
       </div>
     </section>
   );

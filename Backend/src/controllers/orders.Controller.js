@@ -1,3 +1,4 @@
+const { findLatestOrders } = require("../repositories/orders.Repository");
 const {
   createOrderService,
   deleteOrderService,
@@ -16,6 +17,17 @@ async function getAllOrders(req, res) {
     res.status(500).json({ error: "server error" });
   }
 }
+
+async function getLatestOrders(req,res) {
+  try {
+    const orders = await findLatestOrders()
+return res.status(200).json({ orders });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
+
 
 async function getOrderById(req, res) {
   try {
@@ -65,4 +77,5 @@ module.exports = {
   createOrder,
   editOrder,
   deleteOrder,
+  getLatestOrders
 };
