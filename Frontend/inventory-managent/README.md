@@ -1,12 +1,67 @@
-# React + Vite
+# 🧾 Inventory Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Fullstack inventory management system built with **React + Vite + TailwindCSS** and **Express + MySQL**.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- Authentication system with roles (admin / employee)
+- Full CRUD for:
+  - Categories
+  - Products
+  - Suppliers
+  - Users
+  - Orders
+- Orders system (entries and exits)
+- Real-time stock calculation based on orders
+- Low stock alerts
+- Expiration date alerts
+- Filters for:
+  - Expired products
+  - Near-to-expire products
+  - Low stock products
+  - Entry / Exit order types
+- Dashboard with analytics:
+  - Top 10 best selling products
+  - Monthly and total profits
+  - Stock by category
+  - Top 3 products
+  - Alerts overview
+- Toast notifications using **react-hot-toast**
+- Charts built with **Recharts**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React 
+- TypeScript
+- Vite
+- TailwindCSS
+- React Router
+- React Hot Toast
+- Recharts
+- DayJS
+
+### Backend
+
+- Node.js
+- Express
+- MySQL
+- JWT Authentication
+- bcrypt
+- Zod for validation
+- Cookie Parser
+- CORS
+- Dotenv
+
+---
+
+## Author
+Maximo Kugler — Fullstack Developer
+GitHub: https://github.com/Maximo862
+Email: rodri7.9.02313@gmail.com

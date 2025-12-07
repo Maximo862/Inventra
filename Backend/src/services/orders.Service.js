@@ -15,9 +15,9 @@ async function getAllOrdersService() {
 }
 
 async function getLatestProducts() {
-  const orders = await findLatestOrders()
-if (orders.length === 0) return []
-return orders
+  const orders = await findLatestOrders();
+  if (orders.length === 0) return [];
+  return orders;
 }
 
 async function getOrderByIdService(id) {
@@ -62,10 +62,39 @@ async function createOrderService({ product_id, quantity, type, user_id }) {
   }
 }
 
-async function editOrderService({ id, quantity, type, total }) {
-  const [result] = await updateOrder({ id, quantity, type, total });
-  if (result.affectedRows === 0) throw new Error("order not found");
-  return { id, quantity, type, total };
+async function editOrderService({ id, quantity, type }) {
+  const con = await pool.getConnection();
+  await con.beginTransaction();
+  try {
+    const [orderRows] = await findOrderById(id);
+    if (orderRows.length === 0) throw new Error("order not found");
+    const order = orderRows[0];
+    const [productRows] = await findProductById(con, order.product_id);
+    if (productRows.length === 0) throw new Error("product not found");
+    const product = productRows[0];
+
+    const total = Number((product.price * quantity).toFixed(2));
+
+    await updateOrder({
+      id,
+      quantity,
+      total,
+      type,
+    }, con);
+
+    await con.commit();
+    return {
+      id,
+      quantity,
+      type,
+      total,
+    };
+  } catch (err) {
+    await con.rollback();
+    throw err;
+  } finally {
+    con.release();
+  }
 }
 
 async function deleteOrderService(id) {
@@ -80,5 +109,5 @@ module.exports = {
   createOrderService,
   editOrderService,
   deleteOrderService,
-  getLatestProducts
+  getLatestProducts,
 };

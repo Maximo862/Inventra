@@ -1,7 +1,9 @@
 const { pool } = require("../db/db");
 
 async function findAllProducts(activeOnly = true) {
-  const condition = activeOnly ? "WHERE p.isActive = true" : "WHERE p.isActive = false";
+  const condition = activeOnly
+    ? "WHERE p.isActive = true"
+    : "WHERE p.isActive = false";
   const [products] = await pool.execute(`
     SELECT 
       p.*, 
@@ -21,7 +23,10 @@ async function findAllProducts(activeOnly = true) {
 }
 
 async function updateInactiveProducts(id, isActive) {
-  return await pool.execute("UPDATE products SET isActive = ? WHERE id = ?", [isActive, id])
+  return await pool.execute("UPDATE products SET isActive = ? WHERE id = ?", [
+    isActive,
+    id,
+  ]);
 }
 
 async function findLatestProducts() {
@@ -31,7 +36,6 @@ async function findLatestProducts() {
   `);
   return products;
 }
-
 
 async function findAllProductSuppliers() {
   const [rows] = await pool.execute("SELECT * FROM product_suppliers");
@@ -107,5 +111,5 @@ module.exports = {
   deleteProductSuppliers,
   deleteProduct,
   findLatestProducts,
-  updateInactiveProducts
+  updateInactiveProducts,
 };

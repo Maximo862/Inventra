@@ -21,8 +21,8 @@ async function findLatestOrders() {
   return orders;
 }
 
-async function findOrderById(id) {
-  return pool.execute(
+async function findOrderById(id, con = pool) {
+  return con.execute(
     `
     SELECT o.*, 
            p.name AS product_name, 
@@ -47,8 +47,8 @@ async function insertOrder(
   );
 }
 
-async function updateOrder({ id, quantity, type, total }) {
-  return pool.execute(
+async function updateOrder({ id, quantity, type, total }, con = pool) {
+  return con.execute(
     `
     UPDATE orders 
     SET quantity = COALESCE(?, quantity),

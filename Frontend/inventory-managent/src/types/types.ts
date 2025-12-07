@@ -36,7 +36,7 @@ export interface Order {
   id?: number;
   quantity: number;
   type: "entrada" | "salida";
-  total?: number;
+  total: number
   created_at?: string;
   updated_at?: string;
   product_id: number;

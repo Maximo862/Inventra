@@ -1,5 +1,5 @@
 import { useContext, useMemo } from "react"
-import { ProductContext } from "../context/ProductsContext"
+import { ProductContext } from "../features/products/context/ProductsContext"
 import dayjs from "dayjs";
 
 export function useProductsAlert() {

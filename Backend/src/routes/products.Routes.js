@@ -11,14 +11,14 @@ const {
 } = require("../controllers/products.Controller");
 const { requireRole } = require("../middlewares/requireRolre.Middleware");
 
-const productsrouter = express.Router();
+const productsRouter = express.Router();
 
-productsrouter.get("/products", getAllProducts);
-productsrouter.get("/latestproducts", getLatestProducts); 
-productsrouter.get("/products/:id", getProductById);
-productsrouter.post("/products", authRequired,requireRole("admin"), createProduct);
-productsrouter.put("/products/:id", authRequired,requireRole("admin"), editProduct);
-productsrouter.patch("/products/:id", authRequired,requireRole("admin"), updateProductStatus);
-productsrouter.delete("/products/:id", authRequired,requireRole("admin"), deleteProduct);
+productsRouter.get("/products", getAllProducts);
+productsRouter.get("/latestproducts", getLatestProducts); 
+productsRouter.get("/products/:id", getProductById);
+productsRouter.post("/products", authRequired,requireRole("admin"), createProduct);
+productsRouter.put("/products/:id", authRequired,requireRole("admin"), editProduct);
+productsRouter.patch("/products/:id", authRequired,requireRole("admin"), updateProductStatus);
+productsRouter.delete("/products/:id", authRequired,requireRole("admin"), deleteProduct);
 
-module.exports = { productsrouter };
+module.exports = { productsRouter };
