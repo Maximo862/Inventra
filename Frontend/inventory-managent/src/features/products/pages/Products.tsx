@@ -89,7 +89,6 @@ export function Products() {
     setEditingId(null);
   };
 
-  // Handler para editar producto
   const handleEditProduct = (p: Product) => {
     setEditingId(p.id!);
     setProduct({
@@ -155,14 +154,12 @@ export function Products() {
           <StatsGrid stats={statsData} />
         </PageHeader>
 
-        {/* ✅ Componente de Filtros de Alerta */}
         <AlertFiltersProducts
           filterType={filterType}
           filterOptions={filterOptions}
           onFilterChange={setFilterType}
         />
 
-        {/* ✅ Componente de Filtros de Categoría */}
         <CategoryFilters
           categoryFilter={categoryFilter}
           categoryOptions={categoryOptions}
@@ -170,7 +167,6 @@ export function Products() {
           useSelect={false} // Cambia a true si prefieres select
         />
 
-        {/* Formulario */}
         {(isCreating || editingId) && (
           <FormCard
             handleSubmit={handleSubmit}
@@ -188,7 +184,6 @@ export function Products() {
           />
         )}
 
-        {/* ✅ Lista de Productos Activos */}
         {!isCreating && !editingId && (
           <ProductList
             products={filteredProducts}
@@ -202,7 +197,6 @@ export function Products() {
           />
         )}
 
-        {/* ✅ Lista de Productos Inactivos */}
         {!isCreating && !editingId && inactiveProducts.length > 0 && (
           <ProductList
             products={inactiveProducts}

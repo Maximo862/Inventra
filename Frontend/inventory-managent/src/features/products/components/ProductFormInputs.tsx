@@ -1,4 +1,4 @@
-import { Product, Category, Supplier } from "../../../types/types";
+import { Product, Category, Supplier } from "@/types/types";
 
 interface ProductFormInputsProps {
   product: Product;
@@ -29,7 +29,7 @@ export function ProductFormInputs({
         />
       </div>
 
-      {/* Categoría y Precio */}
+     
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -79,7 +79,7 @@ export function ProductFormInputs({
         </div>
       </div>
 
-      {/* Alerta de Stock y Fecha de Vencimiento */}
+      {/* Alerts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -119,7 +119,7 @@ export function ProductFormInputs({
         </div>
       </div>
 
-      {/* Proveedores */}
+      {/* suppliers */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Proveedores

@@ -18,7 +18,6 @@ export function Suppliers() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // Hook genérico de filtros
   const { searchTerm, setSearchTerm, filteredItems } = useFilters(suppliers);
 
   const {
@@ -49,7 +48,6 @@ export function Suppliers() {
     resetForm();
   };
 
-  // Configurar stats
   const statsData = [
     {
       label: "Total Proveedores",
@@ -89,8 +87,6 @@ export function Suppliers() {
         >
           <StatsGrid stats={statsData} />
         </PageHeader>
-
-        {/* Formulario con FormCard */}
         {(isCreating || editingId) && (
           <FormCard
             handleSubmit={handleSubmit}
@@ -106,7 +102,6 @@ export function Suppliers() {
           />
         )}
 
-        {/* Lista de proveedores */}
         {!isCreating && !editingId && (
           <div>
             <div className="flex items-center space-x-2 mb-4">

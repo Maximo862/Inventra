@@ -1,8 +1,8 @@
 import { FiPackage, FiArchive } from "react-icons/fi";
-import { ProductCard } from "../../../components/cards/ProductCard";
-import { Product } from "../../../types/types";
-import { Category } from "../../../types/types";
-import { Supplier } from "../../../types/types";
+import { ProductCard } from "@/components/cards/ProductCard";
+import { Product } from "@/types/types";
+import { Category } from "@/types/types";
+import { Supplier } from "@/types/types";
 
 interface ProductListProps {
   products: Product[];
@@ -32,7 +32,6 @@ export function ProductList({
 
   return (
     <div className="mb-8">
-      {/* Header */}
       <div className="flex items-center space-x-2 mb-4">
         <Icon className="h-6 w-6 text-gray-700" />
         <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
@@ -54,7 +53,6 @@ export function ProductList({
           </p>
         </div>
       ) : (
-        /* Grid de productos */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((p) => (
             <ProductCard

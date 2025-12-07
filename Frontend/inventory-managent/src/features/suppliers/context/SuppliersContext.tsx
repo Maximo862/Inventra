@@ -6,7 +6,7 @@ import {
   editsuppliersRequest,
   deleteSuppliersRequest,
 } from "../api/supplierRequests";
-import { Supplier } from "../../../types/types";
+import { Supplier } from "@/types/types";
 import toast from "react-hot-toast";
 import { handleError } from "@/utils/errorHandler";
 

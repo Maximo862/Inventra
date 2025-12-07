@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { Product } from "../../../types/types";
-import { Category } from "../../../types/types";
+import { Product } from "@/types/types";
+import { Category } from "@/types/types";
 import { FiAlertTriangle, FiClock, FiPackage, FiXCircle } from "react-icons/fi";
 
 type FilterType = "all" | "lowStock" | "expiringSoon" | "expired";

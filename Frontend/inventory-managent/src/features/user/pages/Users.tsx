@@ -22,7 +22,6 @@ export function Users() {
   const [isCreating, setIsCreating] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // Hook genérico de filtros (filtra por username)
   const { searchTerm, setSearchTerm, filteredItems } = useFilters(
     users.map((u) => ({ ...u, name: u.username || "" }))
   );
@@ -59,7 +58,6 @@ export function Users() {
     resetForm();
   };
 
-  // Configurar stats
   const statsData = [
     {
       label: "Total Usuarios",
@@ -100,7 +98,6 @@ export function Users() {
           <StatsGrid stats={statsData} />
         </PageHeader>
 
-        {/* Formulario con FormCard */}
         {(isCreating || editingId) && (
           <FormCard
             handleSubmit={handleSubmit}
@@ -111,7 +108,6 @@ export function Users() {
           />
         )}
 
-        {/* Lista de usuarios */}
         {!isCreating && !editingId && (
           <div>
             <div className="flex items-center space-x-2 mb-4">
@@ -191,7 +187,7 @@ export function Users() {
                           }
                           deleteUser(u.id!);
                         }}
-                        disabled={!!editingId || isCreating || isCurrentUser} // ← Deshabilitar botones
+                        disabled={!!editingId || isCreating || isCurrentUser}
                       />
                     </div>
                   );

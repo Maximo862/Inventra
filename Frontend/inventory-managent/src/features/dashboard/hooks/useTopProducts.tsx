@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { Product } from "../types/types";
-import { Order } from "../types/types";
+import { Product } from "@/types/types";
+import { Order } from "@/types/types";
 
 interface UseTopProductsProps {
   products: Product[];

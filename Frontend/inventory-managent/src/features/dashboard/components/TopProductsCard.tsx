@@ -14,16 +14,15 @@ export function TopProductsCards({ products }: TopProductsCardsProps) {
   if (products.length === 0) return null;
 
   const gradients = [
-    "from-yellow-400 to-yellow-600", // 🥇 Oro
-    "from-gray-300 to-gray-500", // 🥈 Plata
-    "from-amber-600 to-amber-800", // 🥉 Bronce
+    "from-yellow-400 to-yellow-600", 
+    "from-gray-300 to-gray-500", 
+    "from-amber-600 to-amber-800", 
   ];
 
   const medals = ["🏆", "🥈", "🥉"];
 
   return (
     <div className="mb-8">
-      {/* Header */}
       <div className="flex items-center space-x-2 mb-4">
         <FiAward className="h-6 w-6 text-yellow-600" />
         <h2 className="text-2xl font-bold text-gray-900">
@@ -31,7 +30,6 @@ export function TopProductsCards({ products }: TopProductsCardsProps) {
         </h2>
       </div>
 
-      {/* Grid de Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {products.slice(0, 3).map((product, index) => (
           <div
@@ -41,7 +39,6 @@ export function TopProductsCards({ products }: TopProductsCardsProps) {
               transform transition-all duration-200 hover:scale-105 hover:shadow-xl
             `}
           >
-            {/* Header con posición y medalla */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-2">
                 <span className="text-3xl font-bold">#{index + 1}</span>
@@ -67,7 +64,6 @@ export function TopProductsCards({ products }: TopProductsCardsProps) {
               </div>
             </div>
 
-            {/* Badge adicional para el primero */}
             {index === 0 && (
               <div className="mt-4 pt-4 border-t border-white/20">
                 <span className="text-xs font-semibold bg-white/20 px-3 py-1 rounded-full">

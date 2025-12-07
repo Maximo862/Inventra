@@ -56,7 +56,6 @@ export function Orders() {
     resetForm();
   };
 
-  // Filtrar órdenes por búsqueda y tipo
   const filteredOrders =
     orders?.filter((o) => {
       const product = products.find((p) => p.id === o.product_id);
@@ -67,7 +66,6 @@ export function Orders() {
       return matchesSearch && matchesType;
     }) || [];
 
-  // Calcular estadísticas
   const totalEntradas =
     orders
       ?.filter((o) => o.type === "entrada")
@@ -78,7 +76,6 @@ export function Orders() {
       ?.filter((o) => o.type === "salida")
       .reduce((sum, o) => sum + o.quantity, 0) || 0;
 
-  // Configurar stats para StatsGrid
   const statsData = [
     {
       label: "Total Órdenes",
@@ -105,7 +102,6 @@ export function Orders() {
     },
   ];
 
-  // Configurar filtros para TypeFilters
   const filterOptions = [
     {
       value: "all" as const,
@@ -142,20 +138,17 @@ export function Orders() {
           onCreateClick={() => setIsCreating(true)}
           showCreateButton={!isCreating && !editingId}
         >
-          {/* Filtros específicos de Orders */}
           <TypeFilters
             currentFilter={filterType}
             onFilterChange={setFilterType}
             options={filterOptions}
           />
 
-          {/* Stats */}
           <div className="mt-4">
             <StatsGrid stats={statsData} />
           </div>
         </PageHeader>
 
-        {/* Formulario con FormCard */}
         {(isCreating || editingId) && (
           <FormCard
             handleSubmit={handleSubmit}
@@ -172,7 +165,6 @@ export function Orders() {
           />
         )}
 
-        {/* Lista de órdenes */}
         {!isCreating && !editingId && (
           <div>
             <div className="flex items-center space-x-2 mb-4">

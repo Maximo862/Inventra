@@ -78,7 +78,6 @@ export function UserFormInputs({ user, setUser }: UserFormInputsProps) {
         </div>
       </div>
 
-      {/* Contraseña */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Contraseña *

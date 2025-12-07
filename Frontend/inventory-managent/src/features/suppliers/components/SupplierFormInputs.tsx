@@ -1,5 +1,4 @@
-// components/SupplierFormInputs.tsx
-import { Supplier } from "../../types/types";
+import { Supplier } from "@/types/types";
 
 interface SupplierFormInputsProps {
   supplier: Supplier;
@@ -12,7 +11,6 @@ export function SupplierFormInputs({
 }: SupplierFormInputsProps) {
   return (
     <div className="space-y-4">
-      {/* Nombre del Proveedor */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Nombre del Proveedor *
@@ -27,7 +25,6 @@ export function SupplierFormInputs({
         />
       </div>
 
-      {/* Email y Teléfono */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -58,7 +55,6 @@ export function SupplierFormInputs({
         </div>
       </div>
 
-      {/* Dirección */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Dirección

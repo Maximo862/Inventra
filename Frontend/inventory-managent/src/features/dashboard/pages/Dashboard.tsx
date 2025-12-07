@@ -89,13 +89,11 @@ export function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
           <p className="text-gray-600">Vista general de tu inventario</p>
         </div>
 
-        {/* Stats Cards */}
         <DashboardStats
           totalProducts={stats.totalProducts}
           totalStock={stats.totalStock}
@@ -108,19 +106,15 @@ export function Dashboard() {
           totalProfit={prices.totalProfit}
         />
 
-        {/* Quick Actions */}
         <QuickActions actions={quickActions} />
 
-        {/* ✅ Top 3 Productos - Componente Separado */}
         {hasTopProducts && <TopProductsCards products={top3Products} />}
 
-        {/* ✅ Grid de Últimos Productos y Órdenes - Componentes Separados */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <LatestProducts products={latestProducts} />
           <LatestOrders orders={latestOrders} />
         </div>
 
-        {/* Gráfico: Top 10 Productos Más Vendidos */}
         {hasTopProducts && (
           <ChartCard
             title="Top 10 Productos Más Vendidos"
@@ -167,7 +161,6 @@ export function Dashboard() {
           </ChartCard>
         )}
 
-        {/* Gráfico: Stock por Categoría */}
         <ChartCard
           title="Stock por Categoría"
           icon={<FiBarChart2 className="h-6 w-6 text-gray-700" />}
@@ -182,7 +175,6 @@ export function Dashboard() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Gráfico: Entradas vs Salidas */}
         <ChartCard
           title="Entradas vs Salidas"
           icon={<FiTrendingUp className="h-6 w-6 text-gray-700" />}
@@ -197,7 +189,6 @@ export function Dashboard() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Gráfico: Precios Entradas vs Salidas */}
         <ChartCard
           title="Precios: Entradas vs Salidas"
           icon={<FiDollarSign className="h-6 w-6 text-gray-700" />}
@@ -212,7 +203,6 @@ export function Dashboard() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Gráfico: Órdenes por Mes */}
         <ChartCard
           title="Órdenes Mensuales"
           icon={<FiCalendar className="h-6 w-6 text-gray-700" />}
@@ -228,7 +218,6 @@ export function Dashboard() {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* Gráfico: Precios Mensuales */}
         <ChartCard
           title="Análisis de Precios Mensual"
           icon={<FiDollarSign className="h-6 w-6 text-gray-700" />}

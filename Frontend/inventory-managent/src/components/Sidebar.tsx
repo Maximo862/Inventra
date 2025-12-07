@@ -122,7 +122,7 @@ export function SidebarComponent() {
               <FiPackage className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">MyInventory</h1>
+              <h1 className="text-xl font-bold text-gray-900">Inventra</h1>
               <p className="text-xs text-gray-500">Sistema de gestión</p>
             </div>
           </Link>
@@ -168,7 +168,7 @@ export function SidebarComponent() {
           </div>
         )}
 
-        {/* Navigation Links */}
+        {/* Links */}
         <nav className="flex flex-col gap-10 flex-1 px-4 py-4 space-y-1 overflow-y-auto">
           {filteredLinks.map(({ to, label, icon: Icon, badge }) => {
             const active = isActive(to);
@@ -209,7 +209,7 @@ export function SidebarComponent() {
           })}
         </nav>
 
-        {/* Logout Button */}
+      
         <div className="p-4 border-t border-gray-200">
           <button
             onClick={() => {
