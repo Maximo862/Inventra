@@ -71,7 +71,7 @@ Key aspects:
 - Many-to-many relationship between products and suppliers
 - Normalized structure for scalability and maintainability
 
-![Database Schema](Frontend/docs/InventoryManagement_Tables.png)
+![Database Schema](Frontend/Frontend/src/docs/InventoryManagement_Tables.png)
 
 ---
 
