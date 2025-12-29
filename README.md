@@ -61,6 +61,20 @@ Fullstack inventory management system built with **React + Vite + TailwindCSS** 
 
 ---
 
+## Database Design
+
+The system uses a relational database designed to handle users, products,
+categories, suppliers, and stock movements.
+
+Key aspects:
+- One-to-many relationships between users and orders
+- Many-to-many relationship between products and suppliers
+- Normalized structure for scalability and maintainability
+
+![Database Schema](Frontend/Frontend/docs/InventoryManagement.png)
+
+---
+
 ## Author
 Maximo Kugler — Fullstack Developer
 GitHub: https://github.com/Maximo862
