@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { AuthContext } from "../../auth/context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { User } from "../../../types/types";
 
 export function useHandleForm(mode = "register") {
